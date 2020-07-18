@@ -11,7 +11,17 @@ export class ProductListComponent implements OnInit {
   imageWidth: number = 50;
   imageMargin: number = 2;
   showImage: boolean = false;
-  listFilter: string = 'cart';
+
+  _listFilter: string;
+  get listFilter(): string {
+    return this._listFilter;
+  }
+  set listFilter(value: string) {
+    this._listFilter = value;
+    this.filteredProducts = this.listFilter ? this.performFilter(this.listFilter) : this.products;
+  }
+  filteredProducts: Iproduct[] = [];
+
   products: Iproduct[] =[
     {
       "productId": 1,
@@ -64,6 +74,18 @@ export class ProductListComponent implements OnInit {
       "imageUrl": "assets/images/xbox-controller.png"
     }
   ];
+
+  constrictor() {
+    this.filteredProducts = this.products;
+    this._listFilter = 'cart';
+  }
+
+  performFilter(filterBy: string): Iproduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.products.filter((product: Iproduct) =>
+      product.productName.toLocaleLowerCase().indexOf(filterBy) !== -1);
+  }
+
   toggleImage(): void {
     this.showImage = !this.showImage;
   }
